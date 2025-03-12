@@ -117,7 +117,6 @@ export class RestaurantService {
     distance = 1500,
     attempt = 0,
   ): Promise<any[]> {
-    console.log("Shemodisssssssss")
     const query = this.generateRestaurantQuery(
       userLat,
       userLong,

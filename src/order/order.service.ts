@@ -52,9 +52,6 @@ export class OrderService {
 
       const { address: restaurantAddress } = restaurant;
 
-      console.log('@@@@@@@@@@@@@@user', user);
-      console.log('@@@@@@@@@@@@@@restaurant', restaurant);
-
       const routePoints = this.geographyService.createRoutePoints(
         restaurantAddress,
         userAddress,

@@ -96,8 +96,6 @@ export class UserService {
       await this.cacheManager.del(tgId);
       await this.cacheManager.set(tgId, updatedUser, 1000 * 60 * 5);
 
-      console.log('@@@@@@@@@@@@@@@updatedUser', updatedUser);
-
       return updatedUser;
     } catch (error) {
       console.error('Failed to update user contact info:', error);

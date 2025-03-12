@@ -7,7 +7,6 @@ export class ConfigurationController {
 
   @Get('/')
   async getConfiguration(@Query('') query: any) {
-    console.log('@@@@@@@@@@@@', query);
     const { configName } = query;
     return this.configurationService.getConfig(configName);
   }
