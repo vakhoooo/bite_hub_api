@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//denormalized for faster access frequently accessed columns
+model User {
+  id          Int         @id @default(autoincrement())
+  tgId        String      @unique
+  userName    String
+  password    String?
+  city        String?
+  address     String?
+  isBlocked   Boolean     @default(false)
+  phoneNumber String?     @unique
+  lat         Float?
+  long        Float?
+  role        Role        @default(USER)
+  restaurant  Restaurant?
+
+  @@index([tgId])
+}
+
+//denormalized for faster access frequently accessed columns
+model Restaurant {
+  id            Int                @id @default(autoincrement())
+  name          String             @unique
+  introImageUrl String
+  userId        Int                @unique
+  meal          Meal[]
+  user          User               @relation(fields: [userId], references: [id])
+  email         String?            @unique
+  phoneNumber   String             @unique
+  city          String
+  address       String
+  ownerFullname String
+  pickUpAddress String?
+  lat           Float?
+  long          Float?
+  types         String[]
+  percent       Int
+  isOpen        Boolean            @default(false)
+  isBlocked     Boolean            @default(true)
+  rating        RestaurantRating[]
+  Order         Order[]
+}
+
+model RestaurantRating {
+  id           Int        @id @default(autoincrement())
+  eval         Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  restaurantId Int
+}
+
+model Meal {
+  id             Int        @id @default(autoincrement())
+  name           String
+  isActive       Boolean    @default(false)
+  imageUrl       String
+  price          Decimal    @default(0.00)
+  isHalal        Boolean    @default(false)
+  spicyLevel     Int?
+  isAllergic     Boolean    @default(false)
+  restaurantId   Int
+  weight         Decimal
+  ingredients    String[]
+  prepApproxTime Int
+  restaurant     Restaurant @relation(fields: [restaurantId], references: [id])
+}
+
+model Order {
+  id           Int        @id @default(autoincrement())
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  restaurantId Int
+}
+
+model Config {
+  id        Int     @id @default(autoincrement())
+  name      String  @unique
+  isEnabled Boolean
+}
+
+enum OrderStatus {
+  CREATED
+  ACCEPTED
+  READY
+  DELIVERED
+  FAILED
+}
+
+enum Role {
+  USER
+  RESTAURANT_OWNER
+  ADMIN
+  MODERATOR
+}
